@@ -12,6 +12,7 @@
 
 #define  LOG_TAG    "wink-relay-manager"
 
+#define  LOGV(...)  __android_log_print(ANDROID_LOG_VERBOSE, LOG_TAG, __VA_ARGS__)
 #define  LOGD(...)  __android_log_print(ANDROID_LOG_DEBUG, LOG_TAG, __VA_ARGS__)
 #define  LOGE(...)  __android_log_print(ANDROID_LOG_ERROR, LOG_TAG, __VA_ARGS__)
 
@@ -309,6 +310,7 @@ private:
     });
 
     // only using led_a for now
+	// LOGV("proximityEvent: %d %d %d", led_a, led_b, led_c);
     if (led_a > (m_lastProximity * (1 + m_proximityThreshold / 100))) {
       screenPower(true);
       if (m_cb) {
@@ -321,7 +323,7 @@ private:
   void processAmbientLightEvent(int fd, struct input_event* event) {
     consumeEvents(fd, event, [] (struct input_event* e) {
       if (e->type == EV_ABS) {
-        // printf("Got ambient light event %d\n", e->value);
+		// LOGD("Got ambient light event type: %d value: %d\n", e->type, e->value);        
       }
       // ignore others
     });
@@ -330,7 +332,7 @@ private:
   void processAmbientLightIREvent(int fd, struct input_event* event) {
     consumeEvents(fd, event, [] (struct input_event* e) {
       if (e->type == EV_ABS) {
-        // printf("Got ambient light IR event %d\n", e->value);
+		// LOGD("Got ambient light IR event type: %d value: %d\n", e->type, e->value);
       }
       // ignore others
     });
