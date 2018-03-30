@@ -8,6 +8,12 @@
 #include <thread>
 #include "TaskScheduler.hpp"
 #include "linux/input.h"
+#include <android/log.h>
+
+#define  LOG_TAG    "wink-relay-manager"
+
+#define  LOGD(...)  __android_log_print(ANDROID_LOG_DEBUG, LOG_TAG, __VA_ARGS__)
+#define  LOGE(...)  __android_log_print(ANDROID_LOG_ERROR, LOG_TAG, __VA_ARGS__)
 
 #define BUTTON_0_GPIO "/sys/class/gpio/gpio8/"
 #define BUTTON_1_GPIO "/sys/class/gpio/gpio7/"
@@ -63,7 +69,7 @@ public:
     m_screenTimeout = std::chrono::seconds(sec);
   }
 
-  void setProximityThreshold(int t) {
+  void setProximityThreshold(float t) {
     m_proximityThreshold = t;
   }
 
@@ -150,7 +156,7 @@ private:
   tsc::TaskScheduler m_scheduler;
   // Config
   std::chrono::seconds m_screenTimeout;
-  int m_proximityThreshold = 5000;
+  float m_proximityThreshold = 0.75;
   // File Handles
   int m_temperatureFd;
   int m_humidityFd;
@@ -162,6 +168,7 @@ private:
   int m_lastTemperature;
   int m_lastHumidity;
   int m_lastInput;
+  int m_lastProximity;
 
   enum SchedulerGroup {
     BUTTON_0 = 0,
@@ -302,12 +309,13 @@ private:
     });
 
     // only using led_a for now
-    if (led_a >= m_proximityThreshold) {
+    if (led_a > (m_lastProximity * (1 + m_proximityThreshold / 100))) {
       screenPower(true);
       if (m_cb) {
         m_cb->proximityTriggered(led_a);
       }
     }
+	m_lastProximity = led_a;
   }
 
   void processAmbientLightEvent(int fd, struct input_event* event) {
