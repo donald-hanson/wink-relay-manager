@@ -30,7 +30,13 @@ Delete /system/bin/edisonwink:
 rm /system/bin/edisonwink
 ```
 
-adb push libs/armeabi-v7a/wink_manager to /sdcard and then copy it over edisonwink and fix permissions:
+Push wink_manager to sdcard
+
+```
+adb push libs/armeabi-v7a/wink_manager /sdcard 
+```
+
+then copy it over edisonwink and fix permissions:
 
 ```
 cp /sdcard/wink_manager /system/bin/edisonwink
@@ -49,12 +55,29 @@ You'll need to create an ini file on /sdcard/wink_manager.ini
 mqtt_clientid=Relay
 mqtt_topic_prefix=Relay
 mqtt_address=tcp://<host>:<port>
+mqtt_username=username
+mqtt_password=password
 screen_timeout=20
-proximity_threshold=5000
+proximity_threshold=0.75
 hide_status_bar=true
 relay_upper_flags=1
 relay_lower_flags=2
+ping_address=<host>
+ping_port=<port>
+ping_wait=6
+ping_count=10
 ```
+
+Ping Settings 
+--------
+Ping will attempt to connect specified address and port before starting MQTT.  This is used to verify network connectivity.
+
+| Setting | Example Value | Description |
+| --- | --- | --- |
+| ping_address | 192.168.1.10 | IP Address or Hostname to attempt to connect to |
+| ping_port | 80 | Port number to attempt to connect to |
+| ping_count | 10 | Number of connection attempts to make before failing |
+| ping_wait | 6 | Number of seconds between attempts to sleep |
 
 Relay upper and lower flags indicate the preferred functionality per relay/button
 
