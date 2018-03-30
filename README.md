@@ -2,50 +2,54 @@
 Manages most features of a Wink Relay natively and sends events to MQTT
 This project is based on the work done on [wink-relay-handler](https://github.com/mjg59/wink-relay-handler/)
 
-Building
+Building on nix
 --------
 Download the Android NDK and install <br />
 Edit build.sh and set ANDROID_NDK path <br />
 Run ./build.sh
 
+Building on Windows
+----------
+Download the Android NDK and install <br />
+set PATH environment variable to NDK path<br>
+run .\build.bat
+
 Installing
 ----------
 
-You'll need adb access to a rooted Wink Relay. Disable the existing Wink control software by running
+You'll need adb access to a rooted Wink Relay. 
 
-
-```
-pm disable http://com.quirky.android.wink.projectone
-```
-
-as root. Remount /system read-write:
+1. modify wink_manager.ini
+2. push wink_manager.ini to sdcard
+3. Push wink_manager to sdcard
 
 ```
-mount -o rw,remount /system
-```
-
-Delete /system/bin/edisonwink:
-
-```
-rm /system/bin/edisonwink
-```
-
-Push wink_manager to sdcard
-
-```
+adb push wink_manager.ini /sdcard 
 adb push libs/armeabi-v7a/wink_manager /sdcard 
 ```
 
-then copy it over edisonwink and fix permissions:
+4. switch to root user
+5. Disable the existing Wink control software by running
+6. Remount /system read-write
+7. Delete /system/bin/edisonwink
+8. Copy over edisonwink and fix permissions
+9. Reboot 
+
 
 ```
+su
+pm disable http://com.quirky.android.wink.projectone
+mount -o rw,remount /system
+rm /system/bin/edisonwink
 cp /sdcard/wink_manager /system/bin/edisonwink
 chmod 755 /system/bin/edisonwink
+reboot
 ```
 
-Reboot after setting up wink_manager.ini in /sdcard
+10. Tail log with logcat
+
 ```
-reboot
+adb logcat wink-relay-manager:V *:S
 ```
 
 Configuration
