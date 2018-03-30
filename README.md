@@ -70,22 +70,22 @@ proximity_threshold=0.75
 hide_status_bar=true
 relay_upper_flags=1
 relay_lower_flags=2
-ping_address=<host>
-ping_port=<port>
-ping_wait=6
-ping_count=10
+nettest_address=<host>
+nettest_port=<port>
+nettest_wait=6
+nettest_count=10
 ```
 
-Ping Settings 
+Network Test Settings 
 --------
-Ping will attempt to connect specified address and port before starting MQTT.  This is used to verify network connectivity.
+Network Test will attempt to connect to the specified address and port before starting MQTT.  This is used to verify network connectivity.
 
 | Setting | Example Value | Description |
 | --- | --- | --- |
-| ping_address | 192.168.1.10 | IP Address or Hostname to attempt to connect to |
-| ping_port | 80 | Port number to attempt to connect to |
-| ping_count | 10 | Number of connection attempts to make before failing |
-| ping_wait | 6 | Number of seconds between attempts to sleep |
+| nettest_address | 192.168.1.10 | IP Address or Hostname to attempt to connect to |
+| nettest_port | 80 | Port number to attempt to connect to |
+| nettest_count | 10 | Number of connection attempts to make before failing |
+| nettest_wait | 6 | Number of seconds between attempts to sleep |
 
 Relay upper and lower flags indicate the preferred functionality per relay/button
 

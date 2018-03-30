@@ -39,10 +39,10 @@ struct Config {
   std::string mqttPassword;
   std::string mqttAddress;
   std::string mqttTopicPrefix = "Relay";
-  int pingWait;
-  std::string pingAddress;
-  int pingPort;
-  int pingCount;
+  int netTestWait;
+  std::string netTestAddress;
+  int netTestPort;
+  int netTestCount;
   bool hideStatusBar = true;
   short relayFlags[2] = { RELAY_FLAG_SEND_CLICK | RELAY_FLAG_SEND_HELD, RELAY_FLAG_SEND_CLICK | RELAY_FLAG_SEND_HELD };
 };
@@ -164,22 +164,22 @@ public:
   int handleConfigValue(const char* section, const char* name, const char* value) {
     if (strcmp(name, "mqtt_username") == 0) {
       m_config.mqttUsername = value;
-    } else if (strcmp(name, "ping_address") == 0) {
-      m_config.pingAddress = value;
-    } else if (strcmp(name, "ping_wait") == 0) {
+    } else if (strcmp(name, "nettest_address") == 0) {
+      m_config.netTestAddress = value;
+    } else if (strcmp(name, "nettest_wait") == 0) {
       int wait = atoi(value);
       if (wait > 0) {
-        m_config.pingWait = wait;
+        m_config.netTestWait = wait;
       }	  
-    } else if (strcmp(name, "ping_port") == 0) {
+    } else if (strcmp(name, "nettest_port") == 0) {
       int port = atoi(value);
       if (port > 0) {
-        m_config.pingPort = port;
+        m_config.netTestPort = port;
       }	  
-    } else if (strcmp(name, "ping_count") == 0) {
+    } else if (strcmp(name, "netTest_count") == 0) {
       int count = atoi(value);
       if (count > 0) {
-        m_config.pingCount = count;
+        m_config.netTestCount = count;
       }	  
     } else if (strcmp(name, "mqtt_password") == 0) {
       m_config.mqttPassword = value;
@@ -240,30 +240,30 @@ public:
 	LOGD("relayFlags[0]: %d", m_config.relayFlags[0]);
 	LOGD("relayFlags[1]: %d", m_config.relayFlags[1]);
 	
-	LOGD("pingAddress: %s", m_config.pingAddress.c_str());
-	LOGD("pingPort: %d", m_config.pingPort);		
-	LOGD("pingWait: %d", m_config.pingWait);
-	LOGD("pingCount: %d", m_config.pingCount);	
+	LOGD("netTestAddress: %s", m_config.netTestAddress.c_str());
+	LOGD("netTestPort: %d", m_config.netTestPort);		
+	LOGD("netTestWait: %d", m_config.netTestWait);
+	LOGD("netTestCount: %d", m_config.netTestCount);	
 	
 	// setenv("MQTT_C_CLIENT_TRACE", "/sdcard/mqtt.log", true);
 	// setenv("MQTT_C_CLIENT_TRACE_LEVEL", "MAXIMUM", true);
 	// setenv("MQTT_C_CLIENT_TRACE_MAX_LINES", "64000", true);
 	
-	if (m_config.pingCount > 0) {
+	if (m_config.netTestCount > 0) {
 		int res = -1;
-		for(int i=0;i<m_config.pingCount;i++) {
-			res = _testNetwork(m_config.pingAddress.c_str(), m_config.pingPort);
+		for(int i=0;i<m_config.netTestCount;i++) {
+			res = _testNetwork(m_config.netTestAddress.c_str(), m_config.netTestPort);
 			if (res == 0) {
-				LOGD("Successful ping remote system %s. Try %d of %d.", m_config.pingAddress.c_str(), i, m_config.pingCount);
+				LOGD("Successful nettest remote system %s. Try %d of %d.", m_config.netTestAddress.c_str(), i, m_config.netTestCount);
 				break;
 			} else {
-				LOGD("Error ping remote system %s. Result: %d Try %d of %d.", m_config.pingAddress.c_str(), res, i, m_config.pingCount);
+				LOGD("Error nettest remote system %s. Result: %d Try %d of %d.", m_config.netTestAddress.c_str(), res, i, m_config.netTestCount);
 			}
-			sleep(m_config.pingWait);
+			sleep(m_config.netTestWait);
 		}
 		
 		if (res > 0) {
-			LOGE("Failed to ping remote system %s after %d tries", m_config.pingAddress.c_str(), m_config.pingCount);
+			LOGE("Failed to nettest remote system %s after %d tries", m_config.netTestAddress.c_str(), m_config.netTestCount);
 			exit(EXIT_FAILURE);
 			return;
 		}
