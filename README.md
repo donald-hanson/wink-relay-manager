@@ -28,13 +28,17 @@ adb push wink_manager.ini /sdcard
 adb push libs/armeabi-v7a/wink_manager /sdcard 
 ```
 
-4. switch to root user
-5. Disable the existing Wink control software by running
-6. Remount /system read-write
-7. Delete /system/bin/edisonwink
-8. Copy over edisonwink and fix permissions
-9. Reboot 
+4. connect to shell
 
+```
+adb shell
+```
+5. switch to root user
+6. Disable the existing Wink control software by running
+7. Remount /system read-write
+8. Delete /system/bin/edisonwink
+9. Copy over edisonwink and fix permissions
+10. Reboot 
 
 ```
 su
@@ -46,7 +50,7 @@ chmod 755 /system/bin/edisonwink
 reboot
 ```
 
-10. Tail log with logcat
+11. Tail log with logcat
 
 ```
 adb logcat wink-relay-manager:V *:S
